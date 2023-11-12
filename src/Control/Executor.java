@@ -3,7 +3,6 @@ package Control;
 import Model.ResultsQueue;
 import Model.Task;
 import Model.TaskQueue;
-import Model.Worker;
 import Utils.FileManager;
 
 import java.util.ArrayList;
@@ -19,12 +18,7 @@ public class Executor extends Thread {
         this.taskQueue = taskQueue;
         this.resultsQueue = new ResultsQueue();
         this.fileManager = new FileManager(filePath);
-        resetFile();
         createWorkers(numbersOfWorkers, this.resultsQueue);
-    }
-
-    private void resetFile() {
-        this.fileManager.writeInLine("0");
     }
 
     private void createWorkers(int numbersOfWorkers,ResultsQueue resultsQueue) {
@@ -46,16 +40,11 @@ public class Executor extends Thread {
                     }
                 }
             }else if (areAllWorkersFree()) {
-                System.out.println("All workers are free and there are no more tasks to execute");
+                System.out.println("✨ All workers are free and there are no more tasks to execute");
                 stopWorkers();
-                displayTotalTime();
                 stopExecutor();
             }
         }
-    }
-
-    private void displayTotalTime() {
-        System.out.println("Total time: " + resultsQueue.getTotalTime());
     }
 
     private boolean areAllWorkersFree() {
@@ -86,4 +75,23 @@ public class Executor extends Thread {
         return null;
     }
 
+    public TaskQueue getTaskQueue() {
+        return taskQueue;
+    }
+
+    public ResultsQueue getResultsQueue() {
+        return resultsQueue;
+    }
+
+    public ArrayList<Worker> getWorkers() {
+        return workers;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
+    }
 }

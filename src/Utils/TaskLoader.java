@@ -13,7 +13,7 @@ public class TaskLoader {
         double writeTasksCount = (E * totalTasks) / 100;
         int writeTasksAdded = 0;
         System.out.println("Generating " + totalTasks + " tasks, with " + writeTasksCount + " write tasks and " + (totalTasks - writeTasksCount) + " read tasks");
-        int expectedValue = 0;
+
         for (int i = 0; i < totalTasks; i++) {
             int id = i + 1;
             double cost = random.nextDouble() * 0.01;
@@ -29,7 +29,6 @@ public class TaskLoader {
             if (shouldAddWriteTask) {
                 type = "WRITE";
                 value = random.nextInt(10);
-                expectedValue += value;
                 writeTasksAdded++;
             } else {
                 type = "READ";
@@ -38,8 +37,16 @@ public class TaskLoader {
             Task task = new Task(id, cost, type, value);
             queue.add(task);
         }
-        System.out.println("Expected value: " + expectedValue);
         return queue;
     }
 
+    public static int getExpectedValue(LinkedList<Task> queue) {
+        int expectedValue = 0;
+        for (Task task : queue) {
+            if (task.getType().equals("WRITE")) {
+                expectedValue += task.getValue();
+            }
+        }
+        return expectedValue;
+    }
 }

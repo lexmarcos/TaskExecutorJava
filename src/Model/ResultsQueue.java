@@ -29,6 +29,17 @@ public class ResultsQueue {
         return totalTime;
     }
 
+    public Result getLastResult(){
+        Result lastResult = null;
+        for(Result result : queue){
+            lastResult = result;
+        }
+        return lastResult;
+    }
+
+    public Result getFirstResult(){
+        return queue.peek();
+    }
     public synchronized Result remove() {
         return queue.remove();
     }

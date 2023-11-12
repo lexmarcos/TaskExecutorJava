@@ -7,6 +7,21 @@ public class FileManager {
 
     public FileManager(String filePath) {
         this.filePath = filePath;
+        initializeFile();
+    }
+
+    private void initializeFile() {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                writeInLine("0");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            writeInLine("0");
+        }
     }
 
     public synchronized void writeInLine(String content) {
@@ -16,7 +31,6 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-
 
     public String read() {
         String firstLine = null;

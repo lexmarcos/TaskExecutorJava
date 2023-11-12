@@ -1,5 +1,8 @@
-package Model;
+package Control;
 
+import Model.Result;
+import Model.ResultsQueue;
+import Model.Task;
 import Utils.FileManager;
 
 public class Worker extends Thread {
@@ -21,29 +24,31 @@ public class Worker extends Thread {
             long timeStart = System.currentTimeMillis();
 
             Thread.sleep((long) task.getCost() * 1000);
+            int valueAfterTask = 0;
             if(task.getType().equals("WRITE")){
-                writeTask();
+                valueAfterTask = writeTask();
             }
             else {
-                readTask(false);
+                valueAfterTask = readTask(false);
             }
 
             long timeEnd = System.currentTimeMillis();
 
-            this.resultsQueue.add(new Result(task.getId(), task.getValue(), timeEnd - timeStart));
+            this.resultsQueue.add(new Result(task.getId(), valueAfterTask, timeEnd - timeStart));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }finally {
             isBusy = false;
-//            System.out.println("Worker " + this.getName() + " is free");
+            System.out.println("🛑 " + this.getName() + " finished task " + task.getId());
         }
     }
 
-    private void writeTask(){
+    private int writeTask(){
         synchronized (this.fileManager) {
             int currentFileValue = readTask(true);
             fileManager.writeInLine(String.valueOf(currentFileValue + task.getValue()));
-//            System.out.println("Worker " + this.getName() + " Get the value " + currentFileValue +  " wrote value " + currentFileValue + " + " + task.getValue() + " = " + (currentFileValue + task.getValue()));
+            System.out.println("✍️ " + this.getName() + " Get the value " + currentFileValue +  " wrote value " + currentFileValue + " + " + task.getValue() + " = " + (currentFileValue + task.getValue()));
+            return currentFileValue + task.getValue();
         }
     }
 
@@ -53,10 +58,8 @@ public class Worker extends Thread {
         if (!fileValue.isEmpty()) {
             value = Integer.parseInt(fileValue);
             if(!isReadingToWrite){
-//                System.out.println("Worker " + this.getName() + " read value " + value);
+                System.out.println("📖 " + this.getName() + " read value " + value);
             }
-        }else{
-            value = 0;
         }
         return value;
     }
@@ -66,10 +69,11 @@ public class Worker extends Thread {
             synchronized (this) {
                 while (!isBusy) {
                     try {
-//                        System.out.println("Worker " + this.getName() + " is waiting for a task");
+                        System.out.println("⏳ " + this.getName() + " is waiting for a task");
                         wait();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
+                        System.out.println("🚨 " + this.getName() + " interrupted");
                         return;
                     }
                 }
@@ -78,8 +82,6 @@ public class Worker extends Thread {
             doTask();
         }
     }
-
-
 
     public boolean isBusy () {
         return isBusy;
