@@ -1,0 +1,5 @@
+⏱ Total Time: 8562444ms
+🎯 Expected value of write tasks: 18000580
+📄 Value of the file after process: 18000580
+📊 Value of result queue after process: 18000580
+🟢 Same value in all? true ✅
