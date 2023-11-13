@@ -4,6 +4,7 @@ import Model.ResultsQueue;
 import Model.Task;
 import Model.TaskQueue;
 import Utils.FileManager;
+import Utils.ResultDisplayer;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,7 @@ public class Executor extends Thread {
 
     @Override
     public void run() {
+        long timeStart = System.currentTimeMillis();
         while (running) {
             if (!taskQueue.isEmpty()) {
                 Worker worker = getFreeWorker();
@@ -43,6 +45,9 @@ public class Executor extends Thread {
                 System.out.println("✨ All workers are free and there are no more tasks to execute");
                 stopWorkers();
                 stopExecutor();
+                long timeEnd = System.currentTimeMillis();
+                System.out.println();
+                ResultDisplayer.displayTotalTime(timeEnd - timeStart);
             }
         }
     }

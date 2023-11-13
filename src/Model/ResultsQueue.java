@@ -21,14 +21,6 @@ public class ResultsQueue {
         return queue;
     }
 
-    public long getTotalTime(){
-        long totalTime = 0;
-        for(Result result : queue){
-            totalTime += result.getTime();
-        }
-        return totalTime;
-    }
-
     public Result getLastResult(){
         Result lastResult = null;
         for(Result result : queue){
